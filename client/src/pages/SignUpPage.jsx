@@ -155,7 +155,7 @@ const SignUpPage = () => {
               className="bg-blue-500 text-white my-10 w-full"
               disabled={uploading || loading}
             >
-              {loading || uploading ? "Creating account..." : "Sign Up"}
+              {loading || uploading ? "LOADING..." : "Sign Up"}
             </Button>
           </form>
 
