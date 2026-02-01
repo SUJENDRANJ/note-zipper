@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
+const API = import.meta.env.VITE_API_BASE_URL;
+console.log(API);
+
 const authHeader = (getState) => {
   const { auth } = getState();
   return {
@@ -13,7 +16,7 @@ export const fetchNotes = createAsyncThunk(
   "notes/fetchAll",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const res = await fetch("/api/notes", {
+      const res = await fetch(`${API}/api/notes`, {
         headers: authHeader(getState),
       });
 
@@ -30,7 +33,7 @@ export const fetchNoteById = createAsyncThunk(
   "notes/fetchOne",
   async (id, { getState, rejectWithValue }) => {
     try {
-      const res = await fetch(`/api/notes/${id}`, {
+      const res = await fetch(`${API}/api/notes/${id}`, {
         headers: authHeader(getState),
       });
 
@@ -47,7 +50,7 @@ export const createNote = createAsyncThunk(
   "notes/create",
   async (noteData, { getState, rejectWithValue }) => {
     try {
-      const res = await fetch("/api/notes/create", {
+      const res = await fetch(`${API}/api/notes/create`, {
         method: "POST",
         headers: authHeader(getState),
         body: JSON.stringify(noteData),
@@ -66,7 +69,7 @@ export const updateNote = createAsyncThunk(
   "notes/update",
   async ({ id, title, content, category }, { getState, rejectWithValue }) => {
     try {
-      const res = await fetch(`/api/notes/${id}`, {
+      const res = await fetch(`${API}/api/notes/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +95,7 @@ export const deleteNote = createAsyncThunk(
   "notes/delete",
   async (id, { getState, rejectWithValue }) => {
     try {
-      const res = await fetch(`/api/notes/${id}`, {
+      const res = await fetch(`${API}/api/notes/${id}`, {
         method: "DELETE",
         headers: authHeader(getState),
       });

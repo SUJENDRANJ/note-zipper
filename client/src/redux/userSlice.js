@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+const API = import.meta.env.VITE_API_BASE_URL;
+console.log(API);
+
 // ------------------ REGISTER ------------------
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await fetch("/api/users", {
+      const res = await fetch(`${API}/api/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -27,7 +30,7 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const res = await fetch("/api/users/login", {
+      const res = await fetch(`${API}/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -56,7 +59,7 @@ export const updateUserProfile = createAsyncThunk(
       } = getState();
       if (!userInfo?.token) throw new Error("Not authenticated");
 
-      const res = await fetch("/api/users/profile", {
+      const res = await fetch(`${API}/api/users/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

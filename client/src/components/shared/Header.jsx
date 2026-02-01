@@ -20,13 +20,13 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login");
+    navigate("/");
   };
 
   return (
     <header>
       <nav className="flex justify-around p-2 bg-blue-400 items-center text-white">
-        <Link to="/">
+        <Link to="/notes">
           <h3 className="logo font-semibold">Note Zipper</h3>
         </Link>
 

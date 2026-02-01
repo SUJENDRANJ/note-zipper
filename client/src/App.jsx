@@ -16,6 +16,8 @@ function App() {
     {
       element: <AppLayout />,
       children: [
+        { path: "/", element: <LandingPage /> },
+
         {
           element: <ProtectedRoute />,
           children: [
@@ -29,7 +31,6 @@ function App() {
         {
           element: <PublicRoute />,
           children: [
-            { path: "/", element: <LandingPage /> },
             { path: "/login", element: <LoginPage /> },
             { path: "/signup", element: <SignUpPage /> },
           ],
