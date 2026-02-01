@@ -6,17 +6,34 @@ import MyNotes from "./pages/MyNotes";
 import CreateNote from "./pages/CreateNote";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import EditNote from "./pages/EditNote";
+import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   const router = createBrowserRouter([
     {
       element: <AppLayout />,
       children: [
-        { path: "/", element: <LandingPage /> },
-        { path: "/notes", element: <MyNotes /> },
-        { path: "/create-note", element: <CreateNote /> },
-        { path: "/login", element: <LoginPage /> },
-        { path: "/signup", element: <SignUpPage /> },
+        {
+          element: <ProtectedRoute />,
+          children: [
+            { path: "/notes", element: <MyNotes /> },
+            { path: "/create-note", element: <CreateNote /> },
+            { path: "/notes/:id/edit", element: <EditNote /> },
+            { path: "/profile", element: <Profile /> },
+          ],
+        },
+
+        {
+          element: <PublicRoute />,
+          children: [
+            { path: "/", element: <LandingPage /> },
+            { path: "/login", element: <LoginPage /> },
+            { path: "/signup", element: <SignUpPage /> },
+          ],
+        },
       ],
     },
   ]);

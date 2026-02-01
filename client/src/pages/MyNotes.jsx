@@ -8,75 +8,73 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-
-const items = [
-  {
-    category: "plans",
-    title: "What subscription plans do you offer?",
-    content:
-      "We offer three subscription tiers: Starter ($9/month), Professional ($29/month), and Enterprise ($99/month). Each plan includes increasing storage limits, API access, priority support, and team collaboration features.",
-  },
-  {
-    category: "billing",
-    title: "How does billing work?",
-    content:
-      "Billing occurs automatically at the start of each billing cycle. We accept all major credit cards, PayPal, and ACH transfers for enterprise customers. You'll receive an invoice via email after each payment.",
-  },
-  {
-    category: "cancel",
-    title: "How do I cancel my subscription?",
-    content:
-      "You can cancel your subscription anytime from your account settings. There are no cancellation fees or penalties. Your access will continue until the end of your current billing period.",
-  },
-];
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNotes, deleteNote } from "../redux/notesSlice";
+import { useNavigate } from "react-router-dom";
 
 const MyNotes = () => {
-  const [notes, setNotes] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  async function fetchData() {
-    try {
-      const res = await fetch("/api/data");
-      const data = await res.json();
-      console.log(data);
-      setNotes(data);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
+  const { notes, loading, error } = useSelector((state) => state.notes);
+  const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    dispatch(fetchNotes());
+  }, [dispatch]);
+
+  const handleDelete = (id) => {
+    if (!window.confirm("Are you sure you want to delete this note?")) return;
+    dispatch(deleteNote(id));
+  };
 
   return (
     <div className="min-h-screen p-8 max-md:p-1">
-      <Heading value={`Welcome Back, ${"Sujendran"}`} />
-      <Button variant="ghost" className="bg-blue-500 text-white">
+      <Heading value={`Welcome Back, ${userInfo?.name}`} />
+
+      <Button
+        className="bg-blue-500 text-white mb-3"
+        onClick={() => navigate("/create-note")}
+      >
         Create Note
       </Button>
-      <Card className="w-full mt-3">
+
+      <Card className="w-[60%]">
         <CardContent>
-          <Accordion type="single" collapsible defaultValue="plans">
+          {loading && <p>Loading notes...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+          {!loading && notes.length === 0 && <p>No notes found</p>}
+
+          <Accordion type="single" collapsible>
             {notes.map((item) => (
-              <AccordionItem
-                key={item.title}
-                value={item.title}
-                className="relative"
-              >
-                <AccordionTrigger className="flex justify-between gap-25 items-center">
+              <AccordionItem key={item._id} value={item._id} className="w-full">
+                <AccordionTrigger className="flex justify-between items-center btn">
                   <p>{item.title}</p>
-                  <div className="absolute right-10 flex gap-2">
-                    {/* <Button variant="ghost" className="bg-green-500 text-white">
+                  <div className="flex gap-2">
+                    <span
+                      className="bg-green-500 rounded-lg p-1 w-13 text-center text-white"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent accordion toggle
+                        navigate(`/notes/${item._id}/edit`);
+                      }}
+                    >
                       Edit
-                    </Button>
-                    <Button variant="destructive">Delete</Button> */}
+                    </span>
+                    <span
+                      className="bg-red-500 rounded-lg p-1 text-white"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent accordion toggle
+                        handleDelete(item._id);
+                      }}
+                    >
+                      Delete
+                    </span>
                   </div>
                 </AccordionTrigger>
+
                 <AccordionContent>
-                  <Badge variant="outline" className="p-2 bg-gray-300 m-1">
-                    {item.category}
-                  </Badge>
+                  <Badge className="mb-2">{item.category}</Badge>
                   <p>{item.content}</p>
                 </AccordionContent>
               </AccordionItem>
