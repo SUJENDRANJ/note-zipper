@@ -31,18 +31,26 @@ const Header = () => {
         </Link>
 
         {/* {userInfo && (
-          <Input
-            placeholder="Search notes..."
-            className="w-70 bg-white text-black"
-          />
-        )} */}
+            <Input
+              placeholder="Search notes..."
+              className="w-70 bg-white text-black"
+            />
+          )} */}
 
         <div className="flex items-center gap-2">
           {userInfo ? (
             <>
               <Link to="/notes">MyNotes</Link>
 
-              <Select>
+              <Select
+                onValueChange={(value) => {
+                  if (value === "profile") {
+                    navigate("/profile");
+                  } else if (value === "logout") {
+                    handleLogout();
+                  }
+                }}
+              >
                 <SelectTrigger className="w-full max-w-48 bg-white text-black">
                   <SelectValue placeholder={userInfo.name} />
                 </SelectTrigger>
@@ -50,15 +58,8 @@ const Header = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>User</SelectLabel>
-                    <SelectItem
-                      value="profile"
-                      onClick={() => navigate("/profile")}
-                    >
-                      Profile
-                    </SelectItem>
-                    <SelectItem value="logout" onClick={handleLogout}>
-                      Logout
-                    </SelectItem>
+                    <SelectItem value="profile">Profile</SelectItem>
+                    <SelectItem value="logout">Logout</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

@@ -15,6 +15,11 @@ const getNoteById = asyncHandler(async (req, res) => {
   const note = await Note.findById(req.params.id);
 
   if (note) {
+    // Check if the user owns the note
+    if (note.user.toString() !== req.user._id.toString()) {
+      res.status(401);
+      throw new Error("You can't perform this action");
+    }
     res.json(note);
   } else {
     res.status(404).json({ message: "Note not found" });
@@ -46,18 +51,18 @@ const CreateNote = asyncHandler(async (req, res) => {
 const DeleteNote = asyncHandler(async (req, res) => {
   const note = await Note.findById(req.params.id);
 
+  if (!note) {
+    res.status(404);
+    throw new Error("Note not Found");
+  }
+
   if (note.user.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("You can't perform this action");
   }
 
-  if (note) {
-    await note.deleteOne();
-    res.json({ message: "Note Removed" });
-  } else {
-    res.status(404);
-    throw new Error("Note not Found");
-  }
+  await note.deleteOne();
+  res.json({ message: "Note Removed" });
 });
 
 // @desc    Update a note
@@ -70,12 +75,12 @@ const UpdateNote = asyncHandler(async (req, res) => {
 
   if (!note) {
     res.status(404);
-    return next(new Error("Note not found")); // <-- return here
+    throw new Error("Note not found");
   }
 
   if (note.user.toString() !== req.user._id.toString()) {
     res.status(401);
-    return next(new Error("You can't perform this action")); // <-- return here
+    throw new Error("You can't perform this action");
   }
 
   note.title = title;

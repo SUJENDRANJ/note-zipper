@@ -68,10 +68,18 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
   if (user) {
     user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
     user.pic = req.body.pic || user.pic;
     if (req.body.password) {
       user.password = req.body.password;
+    }
+
+    if (req.body.email && req.body.email !== user.email) {
+      const emailExists = await User.findOne({ email: req.body.email });
+      if (emailExists) {
+        res.status(400);
+        throw new Error("Email already in use");
+      }
+      user.email = req.body.email;
     }
 
     const updatedUser = await user.save();

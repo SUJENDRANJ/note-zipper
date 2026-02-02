@@ -13,7 +13,7 @@ app.use(express.json()); // to accept json data
 
 app.use(
   cors({
-    origin: "https://note-zipper-app.netlify.app",
+    origin: ["https://note-zipper-app.netlify.app", "http://localhost:5173"],
     // credentials: true, // only for cookies
   }),
 );

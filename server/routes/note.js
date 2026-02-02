@@ -12,7 +12,7 @@ const { protect } = require("../middlewares/auth.js");
 router.route("/").get(protect, getNotes);
 router
   .route("/:id")
-  .get(getNoteById)
+  .get(protect, getNoteById)
   .delete(protect, DeleteNote)
   .put(protect, UpdateNote);
 router.route("/create").post(protect, CreateNote);
