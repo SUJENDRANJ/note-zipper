@@ -9,43 +9,30 @@ const noteRoutes = require("./routes/note.js");
 const { notFound, errorHandler } = require("./middlewares/error.js");
 
 const app = express();
-app.use(express.json()); // to accept json data
+
+app.use(express.json());
 
 app.use(
   cors({
     origin: ["https://note-zipper-app.netlify.app", "http://localhost:5173"],
-    // credentials: true, // only for cookies
   }),
 );
+
+// Health check (Render uses this implicitly)
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 
 app.use("/api/users", userRoutes);
 app.use("/api/notes", noteRoutes);
 
-// --------------------------deployment------------------------------
-const path = require("path");
-
-const __dirname1 = path.resolve();
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "/client/dist")));
-
-  app.get("/.*/", (req, res) =>
-    res.sendFile(path.resolve(__dirname1, "client", "dist", "index.html")),
-  );
-} else {
-  app.get("/", (req, res) => {
-    res.send("API is running..");
-  });
-}
-// --------------------------deployment------------------------------
-
-// Error Handling middlewares
+// Error middlewares (keep these LAST)
 app.use(notFound);
 app.use(errorHandler);
 
 connectDB()
   .then(() => {
-    app.listen(5000, () => {
+    app.listen(process.env.PORT || 5000, () => {
       console.log("Server Started".yellow);
     });
   })
