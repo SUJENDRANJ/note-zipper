@@ -10,11 +10,13 @@ import EditNote from "./pages/EditNote";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import Error from "./pages/Error";
 
 function App() {
   const router = createBrowserRouter([
     {
       element: <AppLayout />,
+      errorElement: <Error />,
       children: [
         { path: "/", element: <LandingPage /> },
 
