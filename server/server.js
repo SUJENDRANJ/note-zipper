@@ -21,10 +21,6 @@ app.use(
 app.use("/api/users", userRoutes);
 app.use("/api/notes", noteRoutes);
 
-// Error Handling middlewares
-app.use(notFound);
-app.use(errorHandler);
-
 // --------------------------deployment------------------------------
 const path = require("path");
 
@@ -42,6 +38,10 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 // --------------------------deployment------------------------------
+
+// Error Handling middlewares
+app.use(notFound);
+app.use(errorHandler);
 
 connectDB()
   .then(() => {
